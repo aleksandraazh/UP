@@ -1,0 +1,15 @@
+[master bc713a2] add task1/status.txt
+ 1 file changed, 25 insertions(+)
+ create mode 100644 task1/status.txt
+aleksandrazuk@MacBook-Pro-Aleksandra UP % git log
+commit bc713a2454969c27d77c462cd7576b5e84edae6b (HEAD -> master)
+Author: Aleksandra <zukaleksandra7@gmail.com>
+Date:   Mon Feb 15 11:14:38 2021 +0300
+
+    add task1/status.txt
+
+commit dbc57ca503b3a3849c1c9cb0518fd1719afb901d
+Author: Aleksandra <zukaleksandra7@gmail.com>
+Date:   Mon Feb 15 11:11:03 2021 +0300
+
+    add .gitignore
