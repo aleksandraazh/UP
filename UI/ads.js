@@ -1,5 +1,4 @@
-(function (){
-    let adList = [
+let ads = [
         {
             id: '1',
             description: 'A versatile model for spring and early fall. With a raised silhouette and anatomical last, they provide the ultimate in comfort.',
@@ -466,13 +465,23 @@
         }
     ];
 
-    function getAds(skip = 0 , top = 10, filterConfig = undefined) {
-        if (typeof skip != 'number' || typeof top != 'number' || skip > adList.length) {
+class AdList {
+    constructor(ads) {
+        this._privateFieldForAds = ads;
+    };
+
+    clear() {
+        this._privateFieldForAds.length = 0;
+        return this._privateFieldForAds;
+    };
+
+    getPage(skip = 0, top = 10, filterConfig = undefined) {
+        if (typeof skip != 'number' || typeof top != 'number' || skip > this._privateFieldForAds.length) {
             console.log('Incorrect parameters!');
-            return;
+            return false;
         }
-        let newAdList = adList;
-        if(filterConfig) {
+        let newAdList = this._privateFieldForAds;
+        if (filterConfig) {
             for (let param in filterConfig) {
                 if (param === 'vendor') {
                     newAdList = newAdList.filter(item => item.vendor === filterConfig.vendor);
@@ -483,109 +492,136 @@
                 if (param === 'validUntil') {
                     newAdList = newAdList.filter(item => item.validUntil >= filterConfig.validUntil);
                 }
+                if (param === 'hashTags') {
+                    newAdList = newAdList.filter(item => item.hashTags >= filterConfig.hashTags);
+                }
             }
         }
         newAdList.sort(function (a, b) {
-                return a.createdAt - b.createdAt;
+            return a.createdAt - b.createdAt;
         });
         return newAdList.slice(skip, skip + top);
-    }
+    };
 
-    function getAd(id) {
+   get(id) {
         if (typeof id != 'string') {
             console.log('Incorrect parameters!');
-            return;
+            return false;
         }
-        let index = adList.findIndex(item => item.id === id);
-        if (index === -1) {
+        let ad = this._privateFieldForAds.find(item => item.id === id);
+        if (ad === undefined) {
             console.log('Incorrect parameters!');
-            return;
+            return false;
         }
-        return adList.filter(item => item.id === id);
+        return ad;
     }
 
-    function addAd(adItem) {
-        if(validateAd(adItem)) {
-            adList.push(adItem);
+    add(adItem) {
+        if (AdList._validate(adItem)) {
+            this._privateFieldForAds.push(adItem);
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
-    function validateAd(adItem) {
+    edit(id, adItem) {
+        if (typeof id != 'string') {
+            console.log('Incorrect parameter!');
+            return false;
+        }
+        let findUsingId = this._privateFieldForAds.find(item => item.id === id);
+        for (let param in adItem) {
+            if (param === 'id' || param === 'vendor' || param === 'createdAt') {
+                console.log('You cannot change this fields!');
+                return false;
+            }
+            if (param === 'description') {
+                if (typeof param != 'string') {
+                    console.log('Incorrect parameter!');
+                    return false;
+                }
+                findUsingId.description = adItem.description;
+                return true;
+            }
+            if (param === 'link') {
+                if (typeof param != 'string') {
+                    console.log('Incorrect parameter!');
+                    return false;
+                }
+                findUsingId.link = adItem.link;
+                return true;
+            }
+            if (param === 'discount') {
+                if (typeof param != 'string') {
+                    console.log('Incorrect parameter!');
+                    return false;
+                }
+                findUsingId.discount = adItem.discount;
+                return true;
+            }
+            if (param === 'hashtags') {
+                if (!(param instanceof Array)) {
+                    console.log('Incorrect parameter!');
+                    return false;
+                }
+                findUsingId.hashTags = adItem.hashTags;
+                return true;
+            }
+            if (param === 'validUntil') {
+                if (!(param instanceof Date)) {
+                    console.log('Incorrect parameter!');
+                    return false;
+                }
+                findUsingId.validUntil = adItem.validUntil;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    remove(id) {
+        if (typeof id != 'string') {
+            console.log('Incorrect parameter!');
+            return false;
+        }
+        let ad = this._privateFieldForAds.find(item => item.id === id);
+        if (ad !== -1) {
+            this._privateFieldForAds.splice(ad, 1)
+            return true;
+        }
+        return false;
+    }
+
+    adAll(adNewList) {
+       if(!(adNewList instanceof Array)){
+           console.log('Incorrect parameter!');
+           return false;
+       }
+       let objectForIncorrectAds = new AdList([]);
+       for (let i = 0; i < adNewList.length; i++) { // выведет 0, затем 1, затем 2
+            if(AdList._validate(adNewList[i])) {
+                this._privateFieldForAds.push(adNewList[i]);
+            }
+            else {
+                objectForIncorrectAds._privateFieldForAds.push(adNewList[i]);
+            }
+        }
+       return objectForIncorrectAds._privateFieldForAds;
+    }
+
+    static _validate(adItem) {
         return typeof adItem.id == 'string' && typeof adItem.description == 'string'
             && adItem.description.length < 200 && typeof adItem.link == 'string'
             && typeof adItem.vendor == 'string' && typeof adItem.discount == 'string'
             && adItem.createdAt instanceof Date && adItem.validUntil instanceof Date
             && adItem.hashTags instanceof Array;
     }
+}
 
-    function editAd(id, adItem){
-        if (typeof id != 'string') {
-            console.log('Incorrect parameter!');
-            return;
-        }
-        for (let param in adItem) {
-            if (param === 'description') {
-                if (typeof param != 'string') {
-                    console.log('Incorrect parameter!');
-                    return;
-                }
-                adList.find(item => item.id === id).description = adItem.description;
-                return true;
-            }
-            if (param === 'link') {
-                if (typeof param != 'string') {
-                    console.log('Incorrect parameter!');
-                    return;
-                }
-                adList.find(item => item.id === id).link = adItem.link;
-                return true;
-            }
-            if (param === 'discount') {
-                if (typeof param != 'string') {
-                    console.log('Incorrect parameter!');
-                    return;
-                }
-                adList.find(item => item.id === id).discount = adItem.discount;
-                return true;
-            }
-            if (param === 'hashtags') {
-                if (!(param instanceof Array)) {
-                    console.log('Incorrect parameter!');
-                    return;
-                }
-                adList.find(item => item.id === id).hashTags = adItem.hashTags;
-                return true;
-            }
-            if (param === 'validUntil') {
-                if (!(param instanceof Date)) {
-                    console.log('Incorrect parameter!');
-                    return;
-                }
-                adList.find(item => item.id === id).validUntil = adItem.validUntil;
-                return true;
-            }
-        }
-        return false;
-    }
+let listObject = new AdList(ads);
 
-    function removeAd(id){
-        if (typeof id != 'string') {
-            console.log('Incorrect parameter!');
-            return;
-        }
-        let index = adList.findIndex(item => item.id === id);
-        if (index !== -1) {
-            adList.splice(index, 1)
-            return true;
-        }
-        return false;
-    }
-
-    let newAd1 = {
+let newAd1 = {
         id: '21',
         description: 'A versatile model for spring and early fall. With a raised silhouette and anatomical last, they provide the ultimate in comfort.',
         createdAt: new Date('2021-03-05T23:00:00'),
@@ -595,9 +631,9 @@
         validUntil: new Date('2021-04-05T23:00:00'),
         discount: '20%',
         hashTags: ['suede', 'studio27']
-    }
+}
 
-    let newAd2 = {
+let newAd2 = {
         id: '22',
         description: 'A versatile model for spring and early fall. With a raised silhouette and anatomical last, they provide the ultimate in comfort.',
         createdAt: 'Studio 27',
@@ -606,29 +642,77 @@
         validUntil: new Date('2021-04-05T23:00:00'),
         discount: '20%',
         hashTags: 2
+}
+
+let newList = [
+    {
+        id: '22',
+        description: 'A versatile model for spring and early fall. With a raised silhouette and anatomical last, they provide the ultimate in comfort.',
+        createdAt: new Date('2021-03-05T23:00:00'),
+        link: 'https://studio27.com.ua',
+        vendor: 'Studio 27',
+        photoLink: 'https://drive.google.com/file/d/12FgCgOi1WrpNKnlsYAPhvUT8f0eRB34v/view?usp=sharing',
+        validUntil: new Date('2021-04-05T23:00:00'),
+        discount: '20%',
+        hashTags: ['suede', 'studio27']
+    },
+    {
+        id: '23',
+        description: 'A versatile model for spring and early fall. With a raised silhouette and anatomical last, they provide the ultimate in comfort.',
+        createdAt: new Date('2021-03-05T23:00:00'),
+        link: 'https://studio27.com.ua',
+        vendor: 'Studio 27',
+        photoLink: 'https://drive.google.com/file/d/12FgCgOi1WrpNKnlsYAPhvUT8f0eRB34v/view?usp=sharing',
+        validUntil: new Date('2021-04-05T23:00:00'),
+        discount: '20%',
+        hashTags: ['suede', 'studio27']
+    },
+    {
+        id: '24',
+        description: 'A versatile model for spring and early fall. With a raised silhouette and anatomical last, they provide the ultimate in comfort.',
+        createdAt: new Date('2021-03-05T23:00:00'),
+        link: 'https://studio27.com.ua',
+        vendor: 'Studio 27',
+        photoLink: 'https://drive.google.com/file/d/12FgCgOi1WrpNKnlsYAPhvUT8f0eRB34v/view?usp=sharing',
+        validUntil: new Date('2021-04-05T23:00:00'),
+        discount: '20%',
+        hashTags: ['suede', 'studio27']
+    },
+    {
+        id: '25',
+        description: 'A versatile model for spring and early fall. With a raised silhouette and anatomical last, they provide the ultimate in comfort.',
+        createdAt: 'Studio 27',
+        link: 'https://studio27.com.ua',
+        photoLink: 'https://drive.google.com/file/d/12FgCgOi1WrpNKnlsYAPhvUT8f0eRB34v/view?usp=sharing',
+        validUntil: new Date('2021-04-05T23:00:00'),
+        discount: '20%',
+        hashTags: 2
     }
+];
 
-    console.log(getAd('3'));
-    console.log(getAd('30'));
-    console.log(getAd(7));
+    console.log(listObject.get('3'));
+    console.log(listObject.get('30'));
+    console.log(listObject.get(7));
+    console.log(listObject.getPage(0, 10));
+    console.log(listObject.getPage(10, 10));
+    console.log(listObject.getPage(5));
+    console.log(listObject.getPage(30));
+    console.log(listObject.getPage('5'));
+    console.log(listObject.getPage(0, 3, { vendor: 'Marsel' }));
+    console.log(listObject.getPage(0, 5, { validUntil: new Date('2021-04-20T23:00:00')}));
 
-    console.log(getAds(0, 10));
-    console.log(getAds(10, 10));
-    console.log(getAds(5));
-    console.log(getAds(30));
-    console.log(getAds('5'));
-    console.log(getAds(0, 3, { vendor: 'Marsel' }));
-    console.log(getAds(0, 5, { validUntil: new Date('2021-04-20T23:00:00')}));
+    console.log(listObject.add(newAd1));
+    console.log(listObject.add(newAd2));
 
-    console.log(addAd(newAd1));
-    console.log(addAd(newAd2));
+    console.log(listObject.edit('3', { discount: '20%' }));
+    console.log(listObject.edit(5, { discount: '20%' }));
+    console.log(listObject.edit('7', { id: '40' }));
 
-    console.log(editAd('3', { discount: '20%' }));
-    console.log(editAd(5, { discount: '20%' }));
-    console.log(editAd('7', { id: '40' }));
+    console.log(listObject.remove('10'));
+    console.log(listObject.remove(10));
+    console.log(listObject.remove('30'));
 
-    console.log(removeAd('10'));
-    console.log(removeAd(10));
-    console.log(removeAd('30'));
-}());
+    console.log(listObject.adAll(newList));
+    console.log(listObject.adAll(5));
 
+    console.log(listObject.clear());
