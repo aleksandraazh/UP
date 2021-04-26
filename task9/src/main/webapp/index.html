@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="">
+<body>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="resources/css/styles.css" rel="stylesheet">
+<script src="resources/js/Ads.js"></script>
+<script src="resources/js/DOMBuilder.js"></script>
+<script src="resources/js/AdsPage.js"></script>
+<header>
+    <h1 class="header-left">ProShoesClub</h1>
+    <br>
+    <ul class="header-right">
+        <li><button class="add-button">ADD AN ADVERT</button></li>
+    </ul>
+    <div style="clear: left"></div>
+<hr>
+</header>
+<main>
+    <h2>Post Filter<br></h2>
+    <hr>
+    <div class="container">
+        <div class="box">
+            <div>
+                <form class = "filter-form">
+                    <label for="datemin">From:</label><br>
+                    <input type="date" id="datemin"><br><br>
+                    <label for="datemax">To:</label><br>
+                    <input type="date" id="datemax">
+                    <input type="submit" value="+">
+                </form>
+            </div>
+            <div>
+                <label>
+                    <select class="sort-by-time">
+                        <option value>Newest first</option>
+                        <option value>Oldest first</option>
+                </select>
+                </label>
+            </div>
+                <div>
+                    <form class = "filter-form">
+                        <label for="fname">By hashtag:</label><br>
+                        <input type="text" id="fname">
+                        <input type="submit" value="+">
+                    </form>
+                </div>
+            <div>
+                <form>
+                    <label for="fname">By supplier:</label><br>
+                    <select class = "select-vendor">
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br><hr><br>
+    <div class="offers">
+    </div>
+</main>
+<footer>
+    <hr>
+    <h5 class="left-footer">SITE NAME<br>Zhuk Aleksandra<br>2 course 6 group</h5>
+    <h5 class="right-footer">zukaleksandra7@gmail.com<br>21.02.21</h5>
+    <div style="clear: left"></div>
+</footer>
+<script src="resources/js/Test.js"></script>
+</body>
+</html>
