@@ -1,13 +1,13 @@
-package AdList;
+package adlist;
 
 public class Reviews {
-    private String name;
-    private String surname;
-    private String photoLinkOfReviewer;
-    private String textOfReview;
-    private int evaluationOfProduct;
+    private final String name;
+    private final String surname;
+    private final String photoLinkOfReviewer;
+    private final String textOfReview;
+    private final int evaluationOfProduct;
 
-    public Reviews(){
+    public Reviews() {
         name = "";
         surname = "";
         photoLinkOfReviewer = "";
