@@ -1,4 +1,4 @@
-package AdList;
+package adlist;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,54 +6,49 @@ import java.util.List;
 public class AdList {
     private final List<Ad> adList;
 
-    public AdList(){
+    public AdList() {
         adList = new ArrayList<>();
     }
 
     public AdList(List<Ad> adList) {
-        this.adList = new ArrayList<>();
-        this.adList.addAll(adList);
+        this.adList = adList;
     }
 
     public Ad getAd(String id) {
-        for(Ad item: adList){
-            if(item.getId().equals(id)){
-                return item;
-            }
-        }
-        return null;
+        return adList.stream().filter(ad -> ad.getId().equals(id)).findFirst().orElse(null);
     }
 
     public boolean editAd(String id, Ad adItem) {
-        for(Ad item: adList) {
+        boolean flag = false;
+        for (Ad item: adList) {
             if (item.getId().equals(id)) {
                 if (adItem.getDescription() != null) {
                     item.setDescription(adItem.getDescription());
-                    return true;
+                    flag = true;
                 }
                 if (adItem.getLink() != null) {
                     item.setLink(adItem.getLink());
-                    return true;
+                    flag = true;
                 }
                 if (adItem.getDiscount() != -1) {
                     item.setDiscount(adItem.getDiscount());
-                    return true;
+                    flag = true;
                 }
                 if (adItem.getHashTags() != null) {
                     item.setHashTags(adItem.getHashTags());
-                    return true;
+                    flag = true;
                 }
                 if (adItem.getValidUntil() != null) {
                     item.setValidUntil(adItem.getValidUntil());
-                    return true;
+                    flag = true;
                 }
             }
         }
-        return false;
+        return flag;
     }
 
     public boolean addAd(Ad ad) {
-        if(isValid(ad)) {
+        if (isValid(ad)) {
             adList.add(ad);
             return true;
         }
@@ -64,7 +59,7 @@ public class AdList {
 
     public List<Ad> getPage(int skip, int top, Ad filterConfig) {
         List<Ad> result = new ArrayList<>();
-        if(filterConfig != null) {
+        if (filterConfig != null) {
             for (Ad ad : adList) {
                 if (filterConfig.getVendor() != null && filterConfig.getVendor().equals(ad.getVendor())) {
                     result.add(ad);
@@ -88,16 +83,14 @@ public class AdList {
     }
 
     public List<Ad> addAll(List<Ad> newList) {
-        List<Ad> invalidAds = new ArrayList<>();
-        for(Ad item: newList) {
-            if(isValid(item)) {
+        List<Ad> validAds = new ArrayList<>();
+        for (Ad item: newList) {
+            if (isValid(item)) {
                 adList.add(item);
-            }
-            else {
-                invalidAds.add(item);
+                validAds.add(item);
             }
         }
-        return invalidAds;
+        return validAds;
     }
 
     public boolean remove(String id) {
@@ -112,8 +105,8 @@ public class AdList {
         adList.clear();
     }
 
-    public boolean isValid(Ad ad){
-        return ad.getId() != null && ad.getCreatedAt() != null && ad.getDiscount() >= 0
+    public boolean isValid(Ad ad) {
+        return ad != null && ad.getId() != null && ad.getCreatedAt() != null && ad.getDiscount() >= 0
                 && ad.getDiscount() <= 100 && ad.getRating() >= 0 && ad.getRating() <= 5
                 && ad.getDescription() != null && ad.getDescription().length() < 200 && ad.getHashTags() != null
                 && ad.getLink() != null && ad.getValidUntil() != null && ad.getVendor() != null;
