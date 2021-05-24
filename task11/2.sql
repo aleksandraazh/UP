@@ -1,0 +1,1 @@
+SELECT * FROM Ads WHERE VendorId = 3

@@ -1,0 +1,1 @@
+SELECT * FROM Ads ORDER BY CreatedAt DESC LIMIT 5;
