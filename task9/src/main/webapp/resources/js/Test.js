@@ -89,6 +89,6 @@ page.root = 'offers';
 page.nameUser = 'Maria';
 page.adList = adList;
 page.showHeader();
-page.showAds();
+page.showAds(0, 3);
 page.showSelectVendor();
 
