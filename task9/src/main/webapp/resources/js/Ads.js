@@ -580,6 +580,14 @@ class AdList {
         return false;
     }
 
+    getAllVendors() {
+        let vendors = [];
+        for(let i = 0; i < this._privateFieldForAds.length; i++) {
+            vendors.push(this._privateFieldForAds[i].vendor);
+        }
+        return vendors;
+    }
+
     remove(id) {
         if (typeof id != 'string') {
             console.log('Incorrect parameter!');
