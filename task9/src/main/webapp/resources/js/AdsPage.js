@@ -2,12 +2,12 @@ class AdsPage {
     constructor() {
     }
 
-    _data
+    _root
     _name
     _adList
 
-    set data(value) {
-        this._data = value;
+    set root(value) {
+        this._root = value;
     }
 
     set name(value) {
@@ -20,32 +20,28 @@ class AdsPage {
 
     showHeader() {
         let last = document.getElementsByTagName("header").item(0).lastElementChild;
-        console.log(last);
         document.getElementsByTagName("header").item(0).replaceChild(new DOMBuilder(this._name).createHeader(), last);
     }
 
     showSelectVendor() {
         let vendors = document.getElementsByClassName("select-vendor").item(0);
-        let adList = this._adList.getPage(0, 1);
-        let skip = 1;
-        while (adList.length !== 0) {
-            vendors.appendChild(document.createElement("option")).append(adList[0].vendor);
-            adList = this._adList.getPage(skip, 1);
-            skip++;
+        let vendorsList = this._adList.getAllVendors();
+        for (let i = 0; i < vendors.length; i++) {
+            vendors.appendChild(document.createElement("option")).append(vendorsList[i]);
         }
     }
 
-    showAds() {
-        let adInPage = this._adList.getPage(0, 10);
-        let data = document.getElementsByClassName(this._name).item(0);
+    showAds(skip, top) {
+        let adInPage = this._adList.getPage(skip, top);
+        let root = document.getElementsByClassName(this._name).item(0);
         for(let i = 0; i < adInPage.length; i++) {
-            data.appendChild(new DOMBuilder(this._name, adInPage[i]).createPost());
+            root.appendChild(new DOMBuilder(this._name, adInPage[i]).createPost());
         }
     }
 
     addAd(ad) {
         if(this._adList.add(ad)) {
-            document.getElementsByClassName(this._data).item(0).insert(ad);
+            document.getElementsByClassName(this._root).item(0).insert(ad);
         }
     }
 
@@ -61,7 +57,7 @@ class AdsPage {
 
     editAd(id, adItem) {
         this._adList.edit(id, adItem);
-        let root = document.getElementsByClassName(this._data).item(0);
+        let root = document.getElementsByClassName(this._root).item(0);
         let oldChild = document.getElementById(id);
         let newChild = new DOMBuilder(this._name, this._adList.get(id)).createPost();
         root.replaceChild(newChild, oldChild);
