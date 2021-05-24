@@ -1,0 +1,1 @@
+SELECT Name AS 'Name' AND userRole AS 'Role' FROM Ads.User

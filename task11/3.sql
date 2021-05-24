@@ -1,0 +1,1 @@
+SELECT * FROM Ads WHERE UserId = 5 AND CreatedAt = date(2021-04-10)
