@@ -32,25 +32,20 @@ class DOMBuilder {
         post.lastElementChild.textContent = this._ad.description;
         post.appendChild(document.createElement("a")).href = this._ad.link;
         post.lastElementChild.textContent = "Vendor link...";
-        post.appendChild(this._tags());
+        post.appendChild(this._createTags());
         post.appendChild(document.createElement("p")).textContent = "Offer created at " + this._ad.createdAt;
         post.appendChild(document.createElement("p")).textContent = "Offer valid until " + this._ad.validUntil;
         post.appendChild(document.createElement("p")).textContent = this._ad.discount;
-        post.appendChild(this._rating());
+        post.appendChild(this._calculateRating());
         post.appendChild(document.createElement("h3")).textContent = this._ad.reviews.length + " reviews:";
-        post.appendChild(this._comments());
+        post.appendChild(this._showComments());
         post.appendChild(document.createElement("from"));
         post.lastElementChild.appendChild(document.createElement("label"));
-        let addComment = document.createElement("textarea");
-        addComment.placeholder = "Write your review...";
-        addComment.name = "message";
-        addComment.rows = 3;
-        addComment.cols = 45;
-        post.lastElementChild.lastElementChild.appendChild((addComment));
+        post.lastElementChild.lastElementChild.appendChild((this._addComment));
         return post;
     }
 
-    _tags() {
+    _createTags() {
         let tags = document.createElement("div");
         for (let i = 0; i < this._ad.hashTags.length; i++) {
             tags.appendChild(document.createElement("p")).textContent = this._ad.hashTags[i];
@@ -58,7 +53,7 @@ class DOMBuilder {
         return tags;
     }
 
-    _rating() {
+    _calculateRating() {
         let ratingStars = document.createElement("div");
         ratingStars.className = "rating";
         for (let i = 0; i < 5; i++) {
@@ -74,18 +69,28 @@ class DOMBuilder {
         return ratingStars;
     }
 
-    _comments() {
+    _showComments() {
         let comments = document;
-        for (let i = 0; i < this._ad.reviews.length; i++){
+        this._ad.reviews.forEach(
+        function(review) {
             comments.appendChild(document.createElement("br"));
             let comment = document.createElement("div");
             comment.className = "container-for-reviews";
-            comment.appendChild(document.createElement("img")).src = this._ad.reviews[i].photoLinkOfReviewer;
+            comment.appendChild(document.createElement("img")).src = review.photoLinkOfReviewer;
             comment.appendChild(document.createElement("p"));
-            comment.lastElementChild.appendChild(document.createElement("span")).textContent = this._ad.reviews[i].name;
-            comment.appendChild(document.createElement("p")).textContent = this._ad.reviews[i].textOfReview;
+            comment.lastElementChild.appendChild(document.createElement("span")).textContent = review.reviews[i].name;
+            comment.appendChild(document.createElement("p")).textContent = review.textOfReview;
             comments.appendChild(comment);
         }
+    );
         return comments;
+    }
+
+    _addComment() {
+        let addComment = document.createElement("textarea");
+        addComment.placeholder = "Write your review...";
+        addComment.name = "message";
+        addComment.rows = 3;
+        addComment.cols = 45;
     }
 }
